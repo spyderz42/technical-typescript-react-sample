@@ -1,14 +1,16 @@
-import React, { useState } from "react"
-import styled from "@emotion/styled"
+import React, { useState } from "react";
+import styled from "@emotion/styled";
 
-import RatingDropDown from "./RatingDropDown"
-import FormInput from "./FormInputs"
+import RatingDropDown from "./RatingDropDown";
+import RatingCircles from "./RatingCircles";
+import FormInput from "./FormInputs";
 
 type Values = {
-  name: string
-  email: string
-  rating: string
-}
+  name: string;
+  email: string;
+  rating: string;
+  feedback?: string;
+};
 
 const ratings = [
   { value: "1", label: "1" },
@@ -16,25 +18,28 @@ const ratings = [
   { value: "3", label: "3" },
   { value: "4", label: "4" },
   { value: "5", label: "5" },
-]
+];
 
 const Form = () => {
   const [values, setValues] = useState<Values>({
     name: "",
     email: "",
-    rating: "",
-  })
+    feedback: "",
+    rating: "4",
+  });
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
-    setValues({ ...values, [event.target.name]: event.target.value })
-  }
+    setValues({ ...values, [event.target.name]: event.target.value });
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log(values)
-  }
+    event.preventDefault();
+    console.log(values);
+  };
 
   return (
     <FormContainer>
@@ -54,13 +59,16 @@ const Form = () => {
           name={"email"}
         />
 
-        <RatingDropDown
-          label={"Rating"}
+        <RatingCircles
           name={"rating"}
           changeHandler={handleChange}
           values={ratings}
           currentValue={values.rating}
         />
+
+        {+values.rating < 4 && (
+          <textarea name="feedback" onChange={handleChange}></textarea>
+        )}
 
         <div style={{ display: "flex", justifyContent: "space-evenly" }}>
           <Button
@@ -74,10 +82,10 @@ const Form = () => {
         </div>
       </form>
     </FormContainer>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;
 
 const FormContainer = styled("div")({
   padding: "40px",
@@ -90,12 +98,12 @@ const FormContainer = styled("div")({
   borderRadius: "8px",
   boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)",
   justifyContent: "center",
-})
+});
 
 const Header = styled("h2")({
   margin: "20px 0 20px 0",
   color: "#082D61",
-})
+});
 
 const Button = styled("button")(({ primary }: { primary?: boolean }) => ({
   padding: "12px",
@@ -109,4 +117,4 @@ const Button = styled("button")(({ primary }: { primary?: boolean }) => ({
   alignSelf: "flex-end",
   marginTop: "24px",
   height: "40px",
-}))
+}));
